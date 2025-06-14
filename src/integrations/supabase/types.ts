@@ -216,7 +216,6 @@ export type Database = {
           custom_values: Json | null
           favicon_url: string | null
           hero_image_url: string | null
-          hero_layout: string | null
           hero_subtitle: string | null
           hero_title: string | null
           id: string
@@ -244,7 +243,6 @@ export type Database = {
           custom_values?: Json | null
           favicon_url?: string | null
           hero_image_url?: string | null
-          hero_layout?: string | null
           hero_subtitle?: string | null
           hero_title?: string | null
           id?: string
@@ -272,7 +270,6 @@ export type Database = {
           custom_values?: Json | null
           favicon_url?: string | null
           hero_image_url?: string | null
-          hero_layout?: string | null
           hero_subtitle?: string | null
           hero_title?: string | null
           id?: string

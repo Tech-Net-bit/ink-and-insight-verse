@@ -1,6 +1,7 @@
 
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
@@ -69,10 +70,10 @@ const AppContent = () => {
           <Route path="/article/:slug" element={<LazyRoute component={ArticleDetail} />} />
           <Route path="/categories" element={<LazyRoute component={Categories} />} />
           <Route path="/about" element={<LazyRoute component={About} />} />
+          <Route path="/admin" element={<LazyRoute component={Admin} />} />
           
-          {/* Admin routes - Fixed structure */}
-          <Route path="/admin" element={<LazyRoute component={AdminLayout} />}>
-            <Route index element={<LazyRoute component={Admin} />} />
+          {/* Admin routes with nested routing */}
+          <Route path="/admin/*" element={<LazyRoute component={AdminLayout} />}>
             <Route path="articles" element={<LazyRoute component={ArticleManagement} />} />
             <Route path="categories" element={<LazyRoute component={CategoryManagement} />} />
             <Route path="users" element={<LazyRoute component={UserManagement} />} />
@@ -91,9 +92,11 @@ const AppContent = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <Toaster />
-      <Sonner />
-      <AppContent />
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <AppContent />
+      </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

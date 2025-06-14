@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import ImageUpload from './ImageUpload';
 import ValuesTeamManager from './ValuesTeamManager';
 
 const SiteSettings = () => {
@@ -82,10 +83,11 @@ const SiteSettings = () => {
 
       <form onSubmit={handleSubmit}>
         <Tabs defaultValue="general" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="general">General</TabsTrigger>
             <TabsTrigger value="hero">Hero Section</TabsTrigger>
             <TabsTrigger value="branding">Branding</TabsTrigger>
+            <TabsTrigger value="seo">SEO</TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
           </TabsList>
 
@@ -143,6 +145,24 @@ const SiteSettings = () => {
                       placeholder="https://facebook.com/yourpage"
                     />
                   </div>
+                  <div>
+                    <Label htmlFor="social_linkedin">LinkedIn</Label>
+                    <Input
+                      id="social_linkedin"
+                      value={formData?.social_linkedin || ''}
+                      onChange={(e) => handleInputChange('social_linkedin', e.target.value)}
+                      placeholder="https://linkedin.com/company/yourcompany"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="social_instagram">Instagram</Label>
+                    <Input
+                      id="social_instagram"
+                      value={formData?.social_instagram || ''}
+                      onChange={(e) => handleInputChange('social_instagram', e.target.value)}
+                      placeholder="https://instagram.com/yourhandle"
+                    />
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -174,52 +194,150 @@ const SiteSettings = () => {
                     rows={3}
                   />
                 </div>
+                <div>
+                  <Label>Hero Background Image</Label>
+                  <ImageUpload
+                    onUpload={(url) => handleInputChange('hero_image_url', url)}
+                    className="mt-2"
+                  />
+                  {formData?.hero_image_url && (
+                    <div className="mt-2">
+                      <img
+                        src={formData.hero_image_url}
+                        alt="Hero background"
+                        className="w-full h-32 object-cover rounded border"
+                      />
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="branding" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Colors & Theme</CardTitle>
+                  <CardDescription>Customize your brand colors</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="primary_color">Primary Color</Label>
+                    <div className="flex gap-2 items-center">
+                      <Input
+                        id="primary_color"
+                        type="color"
+                        value={formData?.primary_color || '#000000'}
+                        onChange={(e) => handleInputChange('primary_color', e.target.value)}
+                        className="w-20 h-10"
+                      />
+                      <Input
+                        value={formData?.primary_color || '#000000'}
+                        onChange={(e) => handleInputChange('primary_color', e.target.value)}
+                        placeholder="#000000"
+                        className="flex-1"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="secondary_color">Secondary Color</Label>
+                    <div className="flex gap-2 items-center">
+                      <Input
+                        id="secondary_color"
+                        type="color"
+                        value={formData?.secondary_color || '#6366f1'}
+                        onChange={(e) => handleInputChange('secondary_color', e.target.value)}
+                        className="w-20 h-10"
+                      />
+                      <Input
+                        value={formData?.secondary_color || '#6366f1'}
+                        onChange={(e) => handleInputChange('secondary_color', e.target.value)}
+                        placeholder="#6366f1"
+                        className="flex-1"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Brand Assets</CardTitle>
+                  <CardDescription>Upload your logo and favicon</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div>
+                    <Label>Logo</Label>
+                    <ImageUpload
+                      onUpload={(url) => handleInputChange('logo_url', url)}
+                      className="mt-2"
+                    />
+                    {formData?.logo_url && (
+                      <div className="mt-2">
+                        <img
+                          src={formData.logo_url}
+                          alt="Logo"
+                          className="h-16 object-contain border rounded p-2"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label>Favicon</Label>
+                    <ImageUpload
+                      onUpload={(url) => handleInputChange('favicon_url', url)}
+                      className="mt-2"
+                    />
+                    {formData?.favicon_url && (
+                      <div className="mt-2">
+                        <img
+                          src={formData.favicon_url}
+                          alt="Favicon"
+                          className="w-8 h-8 object-contain border rounded"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="seo" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Colors & Theme</CardTitle>
-                <CardDescription>Customize your brand colors</CardDescription>
+                <CardTitle>SEO Settings</CardTitle>
+                <CardDescription>Optimize your site for search engines</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="primary_color">Primary Color</Label>
-                  <div className="flex gap-2 items-center">
-                    <Input
-                      id="primary_color"
-                      type="color"
-                      value={formData?.primary_color || '#000000'}
-                      onChange={(e) => handleInputChange('primary_color', e.target.value)}
-                      className="w-20 h-10"
-                    />
-                    <Input
-                      value={formData?.primary_color || '#000000'}
-                      onChange={(e) => handleInputChange('primary_color', e.target.value)}
-                      placeholder="#000000"
-                      className="flex-1"
-                    />
-                  </div>
+                  <Label htmlFor="meta_title">Meta Title</Label>
+                  <Input
+                    id="meta_title"
+                    value={formData?.meta_title || ''}
+                    onChange={(e) => handleInputChange('meta_title', e.target.value)}
+                    placeholder="Enter meta title"
+                  />
                 </div>
                 <div>
-                  <Label htmlFor="secondary_color">Secondary Color</Label>
-                  <div className="flex gap-2 items-center">
-                    <Input
-                      id="secondary_color"
-                      type="color"
-                      value={formData?.secondary_color || '#6366f1'}
-                      onChange={(e) => handleInputChange('secondary_color', e.target.value)}
-                      className="w-20 h-10"
-                    />
-                    <Input
-                      value={formData?.secondary_color || '#6366f1'}
-                      onChange={(e) => handleInputChange('secondary_color', e.target.value)}
-                      placeholder="#6366f1"
-                      className="flex-1"
-                    />
-                  </div>
+                  <Label htmlFor="meta_description">Meta Description</Label>
+                  <Textarea
+                    id="meta_description"
+                    value={formData?.meta_description || ''}
+                    onChange={(e) => handleInputChange('meta_description', e.target.value)}
+                    placeholder="Enter meta description"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="meta_keywords">Meta Keywords</Label>
+                  <Input
+                    id="meta_keywords"
+                    value={formData?.meta_keywords || ''}
+                    onChange={(e) => handleInputChange('meta_keywords', e.target.value)}
+                    placeholder="keyword1, keyword2, keyword3"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -240,6 +358,26 @@ const SiteSettings = () => {
                     onChange={(e) => handleInputChange('about_content', e.target.value)}
                     placeholder="Enter about page content"
                     rows={5}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="about_mission">Mission Statement</Label>
+                  <Textarea
+                    id="about_mission"
+                    value={formData?.about_mission || ''}
+                    onChange={(e) => handleInputChange('about_mission', e.target.value)}
+                    placeholder="Enter mission statement"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="about_vision">Vision Statement</Label>
+                  <Textarea
+                    id="about_vision"
+                    value={formData?.about_vision || ''}
+                    onChange={(e) => handleInputChange('about_vision', e.target.value)}
+                    placeholder="Enter vision statement"
+                    rows={3}
                   />
                 </div>
 
