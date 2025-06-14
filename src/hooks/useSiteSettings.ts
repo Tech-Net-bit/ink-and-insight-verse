@@ -119,5 +119,27 @@ export const useSiteSettings = () => {
     }
   };
 
-  return { settings, loading, refetch: fetchSiteSettings };
+  const updateSettings = async (newSettings: Partial<SiteSettings>) => {
+    try {
+      const { error } = await supabase
+        .from('site_settings')
+        .update(newSettings)
+        .eq('id', settings?.id);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setSettings(prev => prev ? { ...prev, ...newSettings } : null);
+      
+      // Trigger a custom event for other components
+      window.dispatchEvent(new CustomEvent('site-settings-updated'));
+    } catch (error) {
+      console.error('Error updating settings:', error);
+      throw error;
+    }
+  };
+
+  return { settings, loading, refetch: fetchSiteSettings, updateSettings };
 };

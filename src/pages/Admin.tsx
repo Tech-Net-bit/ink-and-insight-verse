@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { usePerformanceOptimization } from '@/hooks/usePerformanceOptimization';
-import AdminLayout from '@/components/admin/AdminLayout';
 import AdminDashboard from '@/components/admin/AdminDashboard';
 import PerformanceMonitor from '@/components/PerformanceMonitor';
 
@@ -41,9 +40,7 @@ const Admin = () => {
 
   return (
     <>
-      <AdminLayout>
-        <AdminDashboard />
-      </AdminLayout>
+      <AdminDashboard />
       <PerformanceMonitor />
     </>
   );
