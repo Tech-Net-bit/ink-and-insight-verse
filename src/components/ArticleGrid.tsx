@@ -13,7 +13,7 @@ interface Article {
   featured_image_url: string;
   slug: string;
   created_at: string;
-  article_type: string;
+  article_type?: string;
   categories: { name: string } | null;
   profiles: { full_name: string };
 }

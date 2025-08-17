@@ -196,10 +196,10 @@ const SiteSettings = () => {
                 </div>
                 <div>
                   <Label>Hero Background Image</Label>
-                  <ImageUpload
-                    onUpload={(url) => handleInputChange('hero_image_url', url)}
-                    className="mt-2"
-                  />
+                   <ImageUpload
+                     value={formData?.hero_image_url || ''}
+                     onChange={(url) => handleInputChange('hero_image_url', url)}
+                   />
                   {formData?.hero_image_url && (
                     <div className="mt-2">
                       <img
@@ -269,10 +269,10 @@ const SiteSettings = () => {
                 <CardContent className="space-y-6">
                   <div>
                     <Label>Logo</Label>
-                    <ImageUpload
-                      onUpload={(url) => handleInputChange('logo_url', url)}
-                      className="mt-2"
-                    />
+                     <ImageUpload
+                       value={formData?.logo_url || ''}
+                       onChange={(url) => handleInputChange('logo_url', url)}
+                     />
                     {formData?.logo_url && (
                       <div className="mt-2">
                         <img
@@ -285,10 +285,10 @@ const SiteSettings = () => {
                   </div>
                   <div>
                     <Label>Favicon</Label>
-                    <ImageUpload
-                      onUpload={(url) => handleInputChange('favicon_url', url)}
-                      className="mt-2"
-                    />
+                     <ImageUpload
+                       value={formData?.favicon_url || ''}
+                       onChange={(url) => handleInputChange('favicon_url', url)}
+                     />
                     {formData?.favicon_url && (
                       <div className="mt-2">
                         <img

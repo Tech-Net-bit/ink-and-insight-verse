@@ -1,9 +1,18 @@
 -- Complete Database Setup for TechFlow Web App
 -- Run these commands in order in your new Supabase project
 
--- 1. Create custom types/enums
-CREATE TYPE user_role AS ENUM ('user', 'admin');
-CREATE TYPE article_type AS ENUM ('blog', 'review', 'news', 'tutorial');
+-- 1. Create custom types/enums (only if they don't exist)
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
+        CREATE TYPE user_role AS ENUM ('user', 'admin');
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'article_type') THEN
+        CREATE TYPE article_type AS ENUM ('blog', 'review', 'news', 'tutorial');
+    END IF;
+END
+$$;
 
 -- 2. Create profiles table
 CREATE TABLE public.profiles (

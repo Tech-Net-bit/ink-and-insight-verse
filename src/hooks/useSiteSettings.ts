@@ -119,5 +119,21 @@ export const useSiteSettings = () => {
     }
   };
 
-  return { settings, loading, refetch: fetchSiteSettings };
+  const updateSettings = async (newSettings: Partial<SiteSettings>) => {
+    if (!settings?.id) return;
+    
+    const { error } = await supabase
+      .from('site_settings')
+      .update(newSettings)
+      .eq('id', settings.id);
+
+    if (error) {
+      throw error;
+    }
+    
+    // Refresh settings after update
+    await fetchSiteSettings();
+  };
+
+  return { settings, loading, refetch: fetchSiteSettings, updateSettings };
 };
