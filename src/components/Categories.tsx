@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,10 +12,31 @@ interface Category {
   article_count?: number;
 }
 
+// Create context for category filtering
+const CategoryContext = createContext<{
+  activeCategory: string;
+  setActiveCategory: (category: string) => void;
+}>({
+  activeCategory: 'all',
+  setActiveCategory: () => {},
+});
+
+export const useCategoryFilter = () => useContext(CategoryContext);
+
+export const CategoryProvider = ({ children }: { children: React.ReactNode }) => {
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+
+  return (
+    <CategoryContext.Provider value={{ activeCategory, setActiveCategory }}>
+      {children}
+    </CategoryContext.Provider>
+  );
+};
+
 const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [activeCategory, setActiveCategory] = useState<string>('all');
   const [loading, setLoading] = useState(true);
+  const { activeCategory, setActiveCategory } = useCategoryFilter();
 
   useEffect(() => {
     fetchCategories();
@@ -92,6 +113,18 @@ const Categories = () => {
     );
   }
 
+  // Create dynamic category grid based on real categories
+  const categoryGrid = categories.filter(cat => cat.id !== 'all').map((category, index) => {
+    const icons = ['💻', '🤖', '📱', '🎮', '🔧', '🌐', '📊', '🔒'];
+    return {
+      icon: icons[index % icons.length],
+      title: category.name,
+      desc: category.description || 'Explore articles',
+      slug: category.slug,
+      count: category.article_count || 0
+    };
+  });
+
   return (
     <section className="py-12 bg-accent/5">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -129,30 +162,30 @@ const Categories = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { icon: "💻", title: "Tech Reviews", desc: "Latest gadgets", slug: "reviews" },
-            { icon: "🤖", title: "AI & Future", desc: "Tomorrow's tech", slug: "ai-ml" },
-            { icon: "📱", title: "Mobile Tech", desc: "Smartphones & apps", slug: "mobile" },
-            { icon: "🎮", title: "Gaming", desc: "Latest in gaming", slug: "gaming" },
-          ].map((item) => (
-            <div
-              key={item.title}
-              className={`text-center p-6 rounded-xl bg-card border border-border hover:border-primary/20 hover:shadow-lg transition-all duration-300 group cursor-pointer ${
-                activeCategory === item.slug ? 'border-primary shadow-lg' : ''
-              }`}
-              onClick={() => setActiveCategory(item.slug)}
-            >
-              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-200">
-                {item.icon}
+        {categoryGrid.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {categoryGrid.map((item) => (
+              <div
+                key={item.title}
+                className={`text-center p-6 rounded-xl bg-card border border-border hover:border-primary/20 hover:shadow-lg transition-all duration-300 group cursor-pointer ${
+                  activeCategory === item.slug ? 'border-primary shadow-lg' : ''
+                }`}
+                onClick={() => setActiveCategory(item.slug)}
+              >
+                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-200">
+                  {item.icon}
+                </div>
+                <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors duration-200">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-2">{item.desc}</p>
+                <Badge variant="outline" className="text-xs">
+                  {item.count} articles
+                </Badge>
               </div>
-              <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors duration-200">
-                {item.title}
-              </h3>
-              <p className="text-sm text-muted-foreground">{item.desc}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import OptimizedImage from './OptimizedImage';
 import { usePerformanceOptimization } from '@/hooks/usePerformanceOptimization';
 import { useDataPreloader } from '@/hooks/useDataPreloader';
+import { useCategoryFilter } from './Categories';
 
 interface Article {
   id: string;
@@ -14,24 +15,29 @@ interface Article {
   slug: string;
   created_at: string;
   article_type?: string;
-  categories: { name: string } | null;
+  category_id: string | null;
+  categories: { name: string; slug: string } | null;
   profiles: { full_name: string };
 }
 
 const ArticleGrid = () => {
   const [articles, setArticles] = useState<Article[]>([]);
+  const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const { cacheData, getCachedData, checkRateLimit } = usePerformanceOptimization();
   const { allArticles, isPreloading } = useDataPreloader();
+  const { activeCategory } = useCategoryFilter();
 
   useEffect(() => {
     // Use preloaded data if available and ensure article_type is present
     if (allArticles && allArticles.length > 0) {
       const typedArticles = allArticles.map(article => ({
         ...article,
-        article_type: article.article_type || 'blog'
+        article_type: article.article_type || 'blog',
+        category_id: null, // Set default since preloaded data doesn't have this
+        categories: article.categories ? { ...article.categories, slug: article.categories.name.toLowerCase().replace(/\s+/g, '-') } : null
       }));
       setArticles(typedArticles);
       setLoading(false);
@@ -40,6 +46,19 @@ const ArticleGrid = () => {
       fetchArticles();
     }
   }, [allArticles]);
+
+  // Filter articles based on active category
+  useEffect(() => {
+    if (activeCategory === 'all') {
+      setFilteredArticles(articles);
+    } else {
+      const filtered = articles.filter(article => 
+        article.categories?.slug === activeCategory || 
+        article.category_id === activeCategory
+      );
+      setFilteredArticles(filtered);
+    }
+  }, [articles, activeCategory]);
 
   const fetchArticles = async (pageNum = 1) => {
     if (!checkRateLimit('articles-fetch')) {
@@ -76,7 +95,8 @@ const ArticleGrid = () => {
           slug,
           created_at,
           article_type,
-          categories (name),
+          category_id,
+          categories (name, slug),
           profiles (full_name)
         `)
         .eq('published', true)
@@ -176,7 +196,7 @@ const ArticleGrid = () => {
           </p>
         </div>
 
-        {articles.length === 0 && !loading ? (
+        {filteredArticles.length === 0 && !loading ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground text-lg">
               No articles found. Check back later for new content!
@@ -185,7 +205,7 @@ const ArticleGrid = () => {
         ) : (
           <>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {articles.map((article, index) => (
+              {filteredArticles.map((article, index) => (
                 <ArticleCard
                   key={article.id}
                   title={article.title}
