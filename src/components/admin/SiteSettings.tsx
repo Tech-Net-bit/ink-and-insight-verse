@@ -11,10 +11,37 @@ import { useSiteSettings } from '@/hooks/useSiteSettings';
 import ImageUpload from './ImageUpload';
 import ValuesTeamManager from './ValuesTeamManager';
 
+interface SiteSettings {
+  id?: string;
+  site_name?: string;
+  site_description?: string;
+  hero_title?: string;
+  hero_subtitle?: string;
+  hero_image_url?: string;
+  primary_color?: string;
+  secondary_color?: string;
+  meta_title?: string;
+  meta_description?: string;
+  meta_keywords?: string;
+  favicon_url?: string;
+  logo_url?: string;
+  social_twitter?: string;
+  social_facebook?: string;
+  social_linkedin?: string;
+  social_instagram?: string;
+  about_content?: string;
+  about_mission?: string;
+  about_vision?: string;
+  custom_values?: any[];
+  custom_team_members?: any[];
+  show_default_values?: boolean;
+  show_default_team?: boolean;
+}
+
 const SiteSettings = () => {
   const { toast } = useToast();
   const { settings, loading, updateSettings } = useSiteSettings();
-  const [formData, setFormData] = useState(settings);
+  const [formData, setFormData] = useState<SiteSettings>(settings || {});
 
   useEffect(() => {
     if (settings) {
@@ -24,6 +51,15 @@ const SiteSettings = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData || !updateSettings) {
+      toast({
+        title: 'Error',
+        description: 'Settings not loaded yet',
+        variant: 'destructive',
+      });
+      return;
+    }
     
     try {
       await updateSettings(formData);
