@@ -17,10 +17,11 @@ import { LogOut, Menu, Settings, X } from 'lucide-react';
 
 const Header = () => {
   const { user, userRole, signOut } = useAuth();
-  const { settings } = useSiteSettings();
+  const { settings, loading } = useSiteSettings();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const siteName = settings?.site_name || 'TechFlow';
+  // Don't render with fallback values while loading to prevent flickering
+  const siteName = loading ? 'Loading...' : (settings?.site_name || 'TechFlow');
   const logoUrl = settings?.logo_url;
 
   return (
