@@ -15,7 +15,7 @@ import { ArrowLeft, Save, FileText, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import '../../styles/quill-custom.css';
+import '../styles/quill-custom.css';
 import ArticleTemplates from './ArticleTemplates';
 import ImageUpload from './ImageUpload';
 
