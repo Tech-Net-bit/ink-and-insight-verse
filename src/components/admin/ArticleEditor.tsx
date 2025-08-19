@@ -15,7 +15,6 @@ import { ArrowLeft, Save, FileText, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import '../../styles/quill-custom.css';
 import ArticleTemplates from './ArticleTemplates';
 import ImageUpload from './ImageUpload';
 
@@ -109,40 +108,38 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
     return tableHtml;
   };
 
-  // Quill editor modules configuration with custom table button
+  // Quill editor modules configuration
   const modules = {
-    toolbar: {
-      container: [
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        [{ 'script': 'sub'}, { 'script': 'super' }],
-        [{ 'indent': '-1'}, { 'indent': '+1' }],
-        [{ 'direction': 'rtl' }],
-        [{ 'color': [] }, { 'background': [] }],
-        [{ 'align': [] }],
-        ['link', 'image', 'video'],
-        ['blockquote', 'code-block'],
-        ['table'],
-        ['clean']
-      ],
-      handlers: {
-        'table': function() {
-          const range = this.quill.getSelection(true);
-          if (range) {
-            const tableHtml = insertTable();
-            this.quill.clipboard.dangerouslyPasteHTML(range.index, tableHtml);
-          }
+    toolbar: [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'script': 'sub'}, { 'script': 'super' }],
+      [{ 'indent': '-1'}, { 'indent': '+1' }],
+      [{ 'direction': 'rtl' }],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'align': [] }],
+      ['link', 'image', 'video'],
+      ['blockquote', 'code-block'],
+      ['insertTable'],
+      ['clean']
+    ],
+    handlers: {
+      'insertTable': function() {
+        const range = this.quill.getSelection(true);
+        if (range) {
+          const tableHtml = insertTable();
+          this.quill.clipboard.dangerouslyPasteHTML(range.index, tableHtml);
         }
       }
-    },
+    }
   };
 
   const formats = [
     'header', 'bold', 'italic', 'underline', 'strike',
     'list', 'bullet', 'script', 'indent', 'direction',
     'color', 'background', 'align', 'link', 'image', 'video',
-    'blockquote', 'code-block', 'table'
+    'blockquote', 'code-block'
   ];
 
   useEffect(() => {
