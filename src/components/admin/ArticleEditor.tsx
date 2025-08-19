@@ -19,7 +19,7 @@ import ImageUpload from './ImageUpload';
 
 // ✅ Import Quill and Better Table
 import Quill from 'quill';
-import 'quill-better-table/dist/quill-better-table.css';
+import '@/styles/quill-better-table.css'
 import QuillBetterTable from 'quill-better-table';
 
 // ✅ Register module
