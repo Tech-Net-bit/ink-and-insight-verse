@@ -110,31 +110,19 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
 
   // Quill editor modules configuration
   const modules = {
-    toolbar: {
-      container: [
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        [{ 'script': 'sub'}, { 'script': 'super' }],
-        [{ 'indent': '-1'}, { 'indent': '+1' }],
-        [{ 'direction': 'rtl' }],
-        [{ 'color': [] }, { 'background': [] }],
-        [{ 'align': [] }],
-        ['link', 'image', 'video'],
-        ['blockquote', 'code-block'],
-        ['table-insert'],
-        ['clean']
-      ],
-      handlers: {
-        'table-insert': function() {
-          const range = this.quill.getSelection(true);
-          if (range) {
-            const tableHtml = insertTable();
-            this.quill.clipboard.dangerouslyPasteHTML(range.index, tableHtml);
-          }
-        }
-      }
-    },
+    toolbar: [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'script': 'sub'}, { 'script': 'super' }],
+      [{ 'indent': '-1'}, { 'indent': '+1' }],
+      [{ 'direction': 'rtl' }],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'align': [] }],
+      ['link', 'image', 'video'],
+      ['blockquote', 'code-block'],
+      ['clean']
+    ],
   };
 
   const formats = [
@@ -143,6 +131,12 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
     'color', 'background', 'align', 'link', 'image', 'video',
     'blockquote', 'code-block'
   ];
+
+  const handleInsertTable = () => {
+    // You can add table insertion logic here if needed
+    const tableHtml = insertTable();
+    // This would need to be implemented with a ref to the Quill instance
+  };
 
   useEffect(() => {
     fetchCategories();
