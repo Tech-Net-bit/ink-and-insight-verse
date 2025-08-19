@@ -21,6 +21,7 @@ import ImageUpload from './ImageUpload';
 import Quill from 'quill';
 import '@/styles/quill-better-table.css'
 import QuillBetterTable from 'quill-better-table';
+import 'quill-better-table/dist/quill-better-table.css';
 
 // ✅ Register module
 Quill.register(
