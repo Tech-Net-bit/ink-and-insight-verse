@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -17,6 +16,19 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import ArticleTemplates from './ArticleTemplates';
 import ImageUpload from './ImageUpload';
+
+// ✅ Import Quill and Better Table
+import Quill from 'quill';
+import 'quill-better-table/dist/quill-better-table.css';
+import QuillBetterTable from 'quill-better-table';
+
+// ✅ Register module
+Quill.register(
+  {
+    'modules/better-table': QuillBetterTable,
+  },
+  true
+);
 
 interface ArticleEditorProps {
   articleId?: string | null;
@@ -79,7 +91,7 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
     reading_time: 0,
   });
 
-  // Quill editor modules configuration
+  // ✅ Quill editor modules configuration with table support
   const modules = {
     toolbar: [
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
@@ -92,21 +104,55 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
       [{ 'align': [] }],
       ['link', 'image', 'video'],
       ['blockquote', 'code-block'],
-      ['clean']
+      ['clean'],
+      ['table'], // custom placeholder button for table
     ],
+    table: true,
+    'better-table': {
+      operationMenu: {
+        items: {
+          insertColumnRight: { text: 'Insert column right' },
+          insertColumnLeft: { text: 'Insert column left' },
+          insertRowAbove: { text: 'Insert row above' },
+          insertRowBelow: { text: 'Insert row below' },
+          deleteRow: { text: 'Delete row' },
+          deleteColumn: { text: 'Delete column' },
+          deleteTable: { text: 'Delete table' },
+        },
+      },
+    },
+    keyboard: {
+      bindings: QuillBetterTable.keyboardBindings,
+    },
   };
 
   const formats = [
     'header', 'bold', 'italic', 'underline', 'strike',
     'list', 'bullet', 'script', 'indent', 'direction',
     'color', 'background', 'align', 'link', 'image', 'video',
-    'blockquote', 'code-block'
+    'blockquote', 'code-block', 'table'
   ];
 
   useEffect(() => {
     fetchCategories();
     if (articleId) {
       fetchArticle();
+    }
+
+    // ✅ Add table button manually to toolbar
+    const toolbar = document.querySelector('.ql-toolbar');
+    if (toolbar && !toolbar.querySelector('.ql-insertTable')) {
+      const button = document.createElement('button');
+      button.classList.add('ql-insertTable');
+      button.innerHTML = 'Table';
+      toolbar.appendChild(button);
+
+      button.addEventListener('click', () => {
+        const quill = (window as any).quillRef;
+        if (quill) {
+          quill.getModule('better-table').insertTable(3, 3);
+        }
+      });
     }
   }, [articleId]);
 
@@ -419,6 +465,7 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
                     rows={3}
                   />
                 </div>
+
 
                 <div className="space-y-2">
                   <Label htmlFor="content">Content *</Label>
