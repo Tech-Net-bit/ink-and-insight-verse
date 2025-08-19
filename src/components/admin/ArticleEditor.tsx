@@ -13,10 +13,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { ArrowLeft, Save, FileText, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import QuillBetterTable from 'quill-better-table';
+import 'quill-better-table/dist/quill-better-table.css';
 import ArticleTemplates from './ArticleTemplates';
 import ImageUpload from './ImageUpload';
+
+// Register the better table module
+Quill.register('modules/better-table', QuillBetterTable);
 
 interface ArticleEditorProps {
   articleId?: string | null;
@@ -79,69 +84,48 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
     reading_time: 0,
   });
 
-  // Custom table insertion function
-  const insertTable = () => {
-    const tableHtml = `
-      <table style="border-collapse: collapse; width: 100%; border: 1px solid #ddd;">
-        <thead>
-          <tr style="background-color: #f5f5f5;">
-            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Header 1</th>
-            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Header 2</th>
-            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Header 3</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="border: 1px solid #ddd; padding: 8px;">Cell 1</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">Cell 2</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">Cell 3</td>
-          </tr>
-          <tr>
-            <td style="border: 1px solid #ddd; padding: 8px;">Cell 4</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">Cell 5</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">Cell 6</td>
-          </tr>
-        </tbody>
-      </table>
-      <p><br></p>
-    `;
-    return tableHtml;
-  };
-
   // Quill editor modules configuration
   const modules = {
-    toolbar: {
-      container: [
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        [{ 'script': 'sub'}, { 'script': 'super' }],
-        [{ 'indent': '-1'}, { 'indent': '+1' }],
-        [{ 'direction': 'rtl' }],
-        [{ 'color': [] }, { 'background': [] }],
-        [{ 'align': [] }],
-        ['link', 'image', 'video'],
-        ['blockquote', 'code-block'],
-        ['table-insert'],
-        ['clean']
+    toolbar: [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'script': 'sub'}, { 'script': 'super' }],
+      [{ 'indent': '-1'}, { 'indent': '+1' }],
+      [{ 'direction': 'rtl' }],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'align': [] }],
+      ['link', 'image', 'video'],
+      ['blockquote', 'code-block'],
+      [
+        { 'better-table': 'insertTable' },
+        { 'better-table': 'appendRow' },
+        { 'better-table': 'appendCol' },
+        { 'better-table': 'deleteRow' },
+        { 'better-table': 'deleteCol' },
+        { 'better-table': 'deleteTable' }
       ],
-      handlers: {
-        'table-insert': function() {
-          const range = this.quill.getSelection(true);
-          if (range) {
-            const tableHtml = insertTable();
-            this.quill.clipboard.dangerouslyPasteHTML(range.index, tableHtml);
+      ['clean']
+    ],
+    'better-table': {
+      operationMenu: {
+        items: {
+          unmergeCells: {
+            text: 'Another unmerge cells name'
           }
         }
       }
     },
+    keyboard: {
+      bindings: QuillBetterTable.keyboardBindings
+    }
   };
 
   const formats = [
     'header', 'bold', 'italic', 'underline', 'strike',
     'list', 'bullet', 'script', 'indent', 'direction',
     'color', 'background', 'align', 'link', 'image', 'video',
-    'blockquote', 'code-block'
+    'blockquote', 'code-block', 'better-table', 'table-col', 'table-row', 'table-cell'
   ];
 
   useEffect(() => {
