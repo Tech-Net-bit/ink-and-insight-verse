@@ -106,7 +106,6 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
       ['link', 'image', 'video'],
       ['blockquote', 'code-block'],
       ['clean'],
-      ['table'], // custom placeholder button for table
     ],
     table: true,
     'better-table': {
@@ -131,7 +130,7 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
     'header', 'bold', 'italic', 'underline', 'strike',
     'list', 'bullet', 'script', 'indent', 'direction',
     'color', 'background', 'align', 'link', 'image', 'video',
-    'blockquote', 'code-block', 'table'
+    'blockquote', 'code-block'
   ];
 
   useEffect(() => {
