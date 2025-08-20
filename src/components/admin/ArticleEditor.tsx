@@ -94,14 +94,18 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
       ['link', 'image', 'video'],
       ['blockquote', 'code-block'],
       ['clean']
-    ]
+    ],
+    clipboard: {
+      matchVisual: false,
+      htmlToClipboard: true
+    }
   };
 
   const formats = [
     'header', 'bold', 'italic', 'underline', 'strike',
     'list', 'bullet', 'script', 'indent', 'direction',
     'color', 'background', 'align', 'link', 'image', 'video',
-    'blockquote', 'code-block'
+    'blockquote', 'code-block', 'table', 'tr', 'td', 'th'
   ];
 
   useEffect(() => {
