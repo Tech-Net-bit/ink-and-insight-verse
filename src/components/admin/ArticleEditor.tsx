@@ -13,10 +13,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { ArrowLeft, Save, FileText, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import QuillBetterTable from 'quill-better-table';
+import 'quill-better-table/dist/quill-better-table.css';
 import ArticleTemplates from './ArticleTemplates';
 import ImageUpload from './ImageUpload';
+
+// Register the better table module
+Quill.register('modules/better-table', QuillBetterTable);
 
 interface ArticleEditorProps {
   articleId?: string | null;
@@ -92,15 +97,28 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
       [{ 'align': [] }],
       ['link', 'image', 'video'],
       ['blockquote', 'code-block'],
+      ['better-table'],
       ['clean']
     ],
+    'better-table': {
+      operationMenu: {
+        items: {
+          unmergeCells: {
+            text: 'Another unmerge cells name'
+          }
+        }
+      }
+    },
+    keyboard: {
+      bindings: QuillBetterTable.keyboardBindings
+    }
   };
 
   const formats = [
     'header', 'bold', 'italic', 'underline', 'strike',
     'list', 'bullet', 'script', 'indent', 'direction',
     'color', 'background', 'align', 'link', 'image', 'video',
-    'blockquote', 'code-block'
+    'blockquote', 'code-block', 'better-table', 'table-col', 'table-row', 'table-cell'
   ];
 
   useEffect(() => {
