@@ -82,51 +82,19 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
 
   // Quill editor modules configuration
   const modules = {
-    toolbar: {
-      container: [
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        [{ 'script': 'sub'}, { 'script': 'super' }],
-        [{ 'indent': '-1'}, { 'indent': '+1' }],
-        [{ 'direction': 'rtl' }],
-        [{ 'color': [] }, { 'background': [] }],
-        [{ 'align': [] }],
-        ['link', 'image', 'video'],
-        ['blockquote', 'code-block'],
-        ['clean'],
-        ['table-insert']
-      ],
-      handlers: {
-        'table-insert': function() {
-          const table = `
-            <table style="border-collapse: collapse; width: 100%; margin: 10px 0;">
-              <thead>
-                <tr>
-                  <th style="border: 1px solid #ddd; padding: 8px; background-color: #f9f9f9;">Header 1</th>
-                  <th style="border: 1px solid #ddd; padding: 8px; background-color: #f9f9f9;">Header 2</th>
-                  <th style="border: 1px solid #ddd; padding: 8px; background-color: #f9f9f9;">Header 3</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="border: 1px solid #ddd; padding: 8px;">Cell 1</td>
-                  <td style="border: 1px solid #ddd; padding: 8px;">Cell 2</td>
-                  <td style="border: 1px solid #ddd; padding: 8px;">Cell 3</td>
-                </tr>
-                <tr>
-                  <td style="border: 1px solid #ddd; padding: 8px;">Cell 4</td>
-                  <td style="border: 1px solid #ddd; padding: 8px;">Cell 5</td>
-                  <td style="border: 1px solid #ddd; padding: 8px;">Cell 6</td>
-                </tr>
-              </tbody>
-            </table>
-          `;
-          const range = this.quill.getSelection(true);
-          this.quill.clipboard.dangerouslyPasteHTML(range.index, table);
-        }
-      }
-    }
+    toolbar: [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'script': 'sub'}, { 'script': 'super' }],
+      [{ 'indent': '-1'}, { 'indent': '+1' }],
+      [{ 'direction': 'rtl' }],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'align': [] }],
+      ['link', 'image', 'video'],
+      ['blockquote', 'code-block'],
+      ['clean']
+    ]
   };
 
   const formats = [
@@ -465,6 +433,13 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
                       placeholder="Write your article content here..."
                       style={{ height: '300px', marginBottom: '50px' }}
                     />
+                    <div className="mt-4 p-2 bg-muted rounded">
+                      <p className="text-sm text-muted-foreground mb-2">Table Instructions:</p>
+                      <p className="text-xs text-muted-foreground">To add a table, paste this HTML template and customize it:</p>
+                      <code className="text-xs bg-background p-1 rounded block mt-1">
+                        &lt;table style="border-collapse: collapse; width: 100%;"&gt;&lt;tr&gt;&lt;th style="border: 1px solid #ddd; padding: 8px;"&gt;Header&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="border: 1px solid #ddd; padding: 8px;"&gt;Cell&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+                      </code>
+                    </div>
                   </div>
                   <p className="text-sm text-gray-500">
                     Estimated reading time: {formData.reading_time} minute(s)
