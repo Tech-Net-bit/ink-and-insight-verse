@@ -103,14 +103,35 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
     'better-table': {
       operationMenu: {
         items: {
+          insertColumnRight: {
+            text: 'Insert column right'
+          },
+          insertColumnLeft: {
+            text: 'Insert column left'
+          },
+          insertRowUp: {
+            text: 'Insert row above'
+          },
+          insertRowDown: {
+            text: 'Insert row below'
+          },
+          mergeCells: {
+            text: 'Merge cells'
+          },
           unmergeCells: {
-            text: 'Another unmerge cells name'
+            text: 'Split cells'
+          },
+          deleteColumn: {
+            text: 'Delete column'
+          },
+          deleteRow: {
+            text: 'Delete row'
+          },
+          deleteTable: {
+            text: 'Delete table'
           }
         }
       }
-    },
-    keyboard: {
-      bindings: QuillBetterTable.keyboardBindings
     }
   };
 
