@@ -1,0 +1,45 @@
+/* Custom table button for Quill editor */
+.ql-toolbar .ql-table-insert {
+  width: 28px;
+  height: 28px;
+}
+
+.ql-toolbar .ql-table-insert::before {
+  content: "⊞";
+  font-size: 16px;
+  line-height: 28px;
+  text-align: center;
+  display: block;
+}
+
+.ql-toolbar .ql-table-insert:hover {
+  background-color: #f0f0f0;
+}
+
+/* Table styles in editor */
+.ql-editor table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.ql-editor table td,
+.ql-editor table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.ql-editor table th {
+  background-color: #f9f9f9;
+  font-weight: bold;
+}
+
+.ql-editor table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.ql-editor table tr:hover {
+  background-color: #e9ecef;
+}
