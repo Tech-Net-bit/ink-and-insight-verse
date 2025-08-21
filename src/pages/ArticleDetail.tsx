@@ -242,9 +242,10 @@ const ArticleDetail = () => {
               )}
             </div>
 
-            <div className="prose prose-lg max-w-none mb-12">
-              <div dangerouslySetInnerHTML={{ __html: article.content }} />
-            </div>
+            <div 
+              className="prose prose-lg max-w-none mb-12" 
+              dangerouslySetInnerHTML={{ __html: article.content }} 
+            />
 
             <div className="border-t pt-8">
               <ReviewSystem articleId={article.id} />
