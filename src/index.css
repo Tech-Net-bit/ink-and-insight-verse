@@ -121,3 +121,80 @@
     box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
   }
 }
+
+/* Prose styles for article content */
+@layer components {
+  .prose {
+    @apply max-w-none text-foreground;
+  }
+  
+  .prose p {
+    @apply mb-4 text-base leading-7;
+  }
+  
+  .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    @apply font-bold text-foreground mt-6 mb-4;
+  }
+  
+  .prose h1 { @apply text-3xl; }
+  .prose h2 { @apply text-2xl; }
+  .prose h3 { @apply text-xl; }
+  .prose h4 { @apply text-lg; }
+  
+  .prose ul, .prose ol {
+    @apply mb-4 pl-6;
+  }
+  
+  .prose li {
+    @apply mb-2;
+  }
+  
+  .prose blockquote {
+    @apply border-l-4 border-primary pl-4 italic text-muted-foreground my-4;
+  }
+  
+  .prose code {
+    @apply bg-muted px-1 py-0.5 rounded text-sm font-mono;
+  }
+  
+  .prose pre {
+    @apply bg-muted p-4 rounded-lg overflow-x-auto my-4;
+  }
+  
+  .prose pre code {
+    @apply bg-transparent px-0 py-0;
+  }
+  
+  .prose a {
+    @apply text-primary hover:underline;
+  }
+  
+  .prose img {
+    @apply rounded-lg my-4;
+  }
+  
+  /* Table styles for HTML tables in article content */
+  .prose table {
+    @apply w-full border-collapse border border-border my-6 rounded-lg overflow-hidden;
+  }
+  
+  .prose th {
+    @apply bg-muted text-foreground font-semibold text-left p-3 border-b border-border;
+  }
+  
+  .prose td {
+    @apply p-3 border-b border-border text-foreground;
+  }
+  
+  .prose tr:nth-child(even) {
+    @apply bg-muted/30;
+  }
+  
+  .prose tr:hover {
+    @apply bg-muted/50 transition-colors duration-200;
+  }
+  
+  .prose tbody tr:last-child td {
+    @apply border-b-0;
+  }
+}
