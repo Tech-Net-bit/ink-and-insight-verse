@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -84,37 +83,21 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
 
   // Quill editor modules configuration
   const modules = {
-    toolbar: {
-      container: [
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        [{ 'script': 'sub'}, { 'script': 'super' }],
-        [{ 'indent': '-1'}, { 'indent': '+1' }],
-        [{ 'direction': 'rtl' }],
-        [{ 'color': [] }, { 'background': [] }],
-        [{ 'align': [] }],
-        ['link', 'image', 'video'],
-        ['blockquote', 'code-block'],
-        ['clean'],
-        ['table-insert']
-      ],
-      handlers: {
-        'table-insert': function() {
-          const tableHtml = `<table style="border-collapse: collapse; width: 100%;"><tr><th style="border: 1px solid #ddd; padding: 8px;">Header</th><th style="border: 1px solid #ddd; padding: 8px;">Header</th></tr><tr><td style="border: 1px solid #ddd; padding: 8px;">Cell</td><td style="border: 1px solid #ddd; padding: 8px;">Cell</td></tr></table>`;
-          const range = this.quill.getSelection(true);
-          this.quill.clipboard.dangerouslyPasteHTML(range.index, tableHtml);
-        }
-      }
-    },
+    toolbar: [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'script': 'sub'}, { 'script': 'super' }],
+      [{ 'indent': '-1'}, { 'indent': '+1' }],
+      [{ 'direction': 'rtl' }],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'align': [] }],
+      ['link', 'image', 'video'],
+      ['blockquote', 'code-block'],
+      ['clean']
+    ],
     clipboard: {
-      matchVisual: false,
-      matchers: [
-        ['table', (node: any, delta: any) => {
-          // Allow table HTML to be pasted directly
-          return delta;
-        }]
-      ]
+      matchVisual: false
     }
   };
 
@@ -122,7 +105,7 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
     'header', 'bold', 'italic', 'underline', 'strike',
     'list', 'bullet', 'script', 'indent', 'direction',
     'color', 'background', 'align', 'link', 'image', 'video',
-    'blockquote', 'code-block', 'table', 'tr', 'td', 'th'
+    'blockquote', 'code-block'
   ];
 
   useEffect(() => {
@@ -222,24 +205,13 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
     }));
   };
 
-  // Handle HTML pasting for tables
-  const handlePaste = (e: React.ClipboardEvent) => {
-    e.preventDefault();
-    const clipboardData = e.clipboardData.getData('text/html') || e.clipboardData.getData('text/plain');
-    
-    if (clipboardData.includes('<table')) {
-      const quill = quillRef.current?.getEditor();
-      if (quill) {
-        const range = quill.getSelection(true);
-        quill.clipboard.dangerouslyPasteHTML(range.index, clipboardData);
-      }
-    } else {
-      // Let Quill handle regular paste
-      const quill = quillRef.current?.getEditor();
-      if (quill) {
-        const range = quill.getSelection(true);
-        quill.insertText(range.index, clipboardData);
-      }
+  // Insert table function
+  const insertTable = () => {
+    const quill = quillRef.current?.getEditor();
+    if (quill) {
+      const tableHtml = `<table style="border-collapse: collapse; width: 100%; margin: 10px 0;"><tr><th style="border: 1px solid #ddd; padding: 8px; background-color: #f9f9f9;">Header 1</th><th style="border: 1px solid #ddd; padding: 8px; background-color: #f9f9f9;">Header 2</th><th style="border: 1px solid #ddd; padding: 8px; background-color: #f9f9f9;">Header 3</th></tr><tr><td style="border: 1px solid #ddd; padding: 8px;">Cell 1</td><td style="border: 1px solid #ddd; padding: 8px;">Cell 2</td><td style="border: 1px solid #ddd; padding: 8px;">Cell 3</td></tr><tr><td style="border: 1px solid #ddd; padding: 8px;">Cell 4</td><td style="border: 1px solid #ddd; padding: 8px;">Cell 5</td><td style="border: 1px solid #ddd; padding: 8px;">Cell 6</td></tr></table><br>`;
+      const range = quill.getSelection(true);
+      quill.clipboard.dangerouslyPasteHTML(range.index, tableHtml);
     }
   };
 
@@ -465,7 +437,7 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
 
                 <div className="space-y-2">
                   <Label htmlFor="content">Content *</Label>
-                  <div className="min-h-[400px]">
+                  <div className="min-h-[500px]">
                     <ReactQuill
                       ref={quillRef}
                       theme="snow"
@@ -474,31 +446,34 @@ const ArticleEditor = ({ articleId, onClose }: ArticleEditorProps) => {
                       modules={modules}
                       formats={formats}
                       placeholder="Write your article content here..."
-                      style={{ height: '300px', marginBottom: '50px' }}
+                      className="bg-white"
+                      style={{ height: '400px' }}
                     />
-                    <div className="mt-4 p-2 bg-muted rounded">
-                      <p className="text-sm text-muted-foreground mb-2">Table Instructions:</p>
-                      <p className="text-xs text-muted-foreground">Click the table button (⊞) in the toolbar above to insert a table. Tables will be rendered properly when saved!</p>
-                      <div className="mt-2">
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => {
-                            const quill = quillRef.current?.getEditor();
-                            if (quill) {
-                              const tableHtml = `<table style="border-collapse: collapse; width: 100%;"><tr><th style="border: 1px solid #ddd; padding: 8px;">Header 1</th><th style="border: 1px solid #ddd; padding: 8px;">Header 2</th></tr><tr><td style="border: 1px solid #ddd; padding: 8px;">Cell 1</td><td style="border: 1px solid #ddd; padding: 8px;">Cell 2</td></tr></table><p><br></p>`;
-                              const range = quill.getSelection(true);
-                              quill.clipboard.dangerouslyPasteHTML(range.index, tableHtml);
-                            }
-                          }}
-                        >
-                          Insert Sample Table
-                        </Button>
+                  </div>
+                  <div className="mt-16 p-3 bg-muted rounded-lg border">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-foreground mb-1">Table Tools</p>
+                        <p className="text-xs text-muted-foreground">Insert HTML tables into your content</p>
                       </div>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm"
+                        onClick={insertTable}
+                        className="ml-4"
+                      >
+                        Insert Table
+                      </Button>
+                    </div>
+                    <div className="mt-3 p-2 bg-background rounded text-xs">
+                      <p className="text-muted-foreground">
+                        <strong>Tip:</strong> You can also paste HTML table code directly into the editor. 
+                        Tables will render properly when the article is saved and published.
+                      </p>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 mt-4">
                     Estimated reading time: {formData.reading_time} minute(s)
                   </p>
                 </div>
